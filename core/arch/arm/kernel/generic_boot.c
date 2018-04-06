@@ -110,8 +110,11 @@ __weak void init_sec_mon(unsigned long nsec_entry)
 	/* Initialize secure monitor */
 	nsec_ctx = sm_get_nsec_ctx();
 	nsec_ctx->mon_lr = nsec_entry;
+#ifdef CFG_NS_HYPERVISOR
+	nsec_ctx->mon_spsr = CPSR_MODE_HYP | CPSR_I;
+#else
 	nsec_ctx->mon_spsr = CPSR_MODE_SVC | CPSR_I;
-
+#endif
 }
 #endif
 
