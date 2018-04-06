@@ -30,7 +30,9 @@ static struct serial8250_uart_data console_data;
 register_phys_mem(MEM_AREA_IO_SEC, GIC_BASE, GIC_REG_SIZE);
 register_phys_mem(MEM_AREA_IO_SEC, CONSOLE_UART_BASE, UART_REG_SIZE);
 
+#ifdef CFG_DYNAMIC_SHMEM
 register_dynamic_shm(DRAM0_BASE_NSEC, DRAM0_SIZE_NSEC);
+#endif
 
 const struct thread_handlers *generic_boot_get_handlers(void)
 {
