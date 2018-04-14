@@ -152,6 +152,27 @@ int psci_affinity_info(uint32_t affinity,
 }
 #endif
 
+void __noreturn psci_system_off(void)
+{
+	vaddr_t snvs_base = core_mmu_get_va(SNVS_BASE, MEM_AREA_IO_SEC);
+
+	write32(SNVS_LPCR_TOP_MASK |
+		SNVS_LPCR_DP_EN_MASK |
+		SNVS_LPCR_SRTC_ENV_MASK, snvs_base + SNVS_LPCR_OFF);
+	dsb();
+
+	while (1)
+		;
+}
+
+__weak int imx7d_lowpower_idle(uint32_t power_state __unused,
+			uintptr_t entry __unused,
+			uint32_t context_id __unused,
+			struct sm_nsec_ctx *nsec __unused)
+{
+	return 0;
+}
+
 __weak int imx7_cpu_suspend(uint32_t power_state __unused,
 			    uintptr_t entry __unused,
 			    uint32_t context_id __unused,
@@ -184,7 +205,9 @@ int psci_cpu_suspend(uint32_t power_state,
 	 */
 	DMSG("ID = %d\n", id);
 	if (id == 1) {
-		/* Not supported now */
+		if (soc_is_imx7ds())
+			return imx7d_lowpower_idle(power_state, entry,
+						   context_id, nsec);
 		return ret;
 	} else if (id == 0) {
 		if (soc_is_imx7ds()) {

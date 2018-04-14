@@ -115,7 +115,7 @@ endif
 # with limited depth not including any tag, so there is really no guarantee
 # that TEE_IMPL_VERSION contains the major and minor revision numbers.
 CFG_OPTEE_REVISION_MAJOR ?= 3
-CFG_OPTEE_REVISION_MINOR ?= 0
+CFG_OPTEE_REVISION_MINOR ?= 1
 
 # Trusted OS implementation manufacturer name
 CFG_TEE_MANUFACTURER ?= LINARO
@@ -242,7 +242,7 @@ CFG_DT ?= n
 # editing of the supplied DTB.
 CFG_DTB_MAX_SIZE ?= 0x10000
 
-# Enable static TA and core self tests
+# Enable core self tests and related pseudo TAs
 CFG_TEE_CORE_EMBED_INTERNAL_TESTS ?= y
 
 # This option enables OP-TEE to respond to SMP boot request: the Rich OS
@@ -304,3 +304,16 @@ CFG_DYN_SHM_CAP ?= y
 # Enables support for larger physical addresses, that is, it will define
 # paddr_t as a 64-bit type.
 CFG_CORE_LARGE_PHYS_ADDR ?= n
+
+# Define the maximum size, in bits, for big numbers in the Internal Core API
+# Arithmetical functions. This does *not* influence the key size that may be
+# manipulated through the Cryptographic API.
+# Set this to a lower value to reduce the TA memory footprint.
+CFG_TA_BIGNUM_MAX_BITS ?= 2048
+
+# Define the maximum size, in bits, for big numbers in the TEE core (privileged
+# layer).
+# This value is an upper limit for the key size in any cryptographic algorithm
+# implemented by the TEE core.
+# Set this to a lower value to reduce the memory footprint.
+CFG_CORE_BIGNUM_MAX_BITS ?= 4096
